@@ -15,7 +15,7 @@ class Observations:
     a certain resource or not.
     """
 
-    def __init__(self):
+    def __init__(self, timeslot_length: float):
         """
         Initialize to an empty set of observations.
         Right now, this is a mix of numpy and python as I think we need constructs from both.
@@ -31,7 +31,6 @@ class Observations:
                             observed at at
                             time t
         priority - the priority for time slice t
-        timeslot - the currently executing time slot
         """
         self.num_obs = 0
         self.band = np.empty((0,), dtype=str)
@@ -41,7 +40,8 @@ class Observations:
         self.obs_time = np.empty((0,), dtype=float)
         self.valid_site_times = []
         self.priority = np.empty((0,), dtype=float)
-        self.timeslot = 0
+        self.timeslot_length = timeslot_length
+        assert(self.timeslot_length > 0, "Time slot length must be nonnegative, in seconds: %s" % timeslot_length)
 
         self.params = {'1': {'m1': 1.406, 'b1': 2.0, 'm2': 0.50, 'b2': 0.5, 'xb': 0.8, 'xb0': 0.0, 'xc0': 0.0},
                        '2': {'m1': 1.406, 'b1': 1.0, 'm2': 0.50, 'b2': 0.5, 'xb': 0.8, 'xb0': 0.0, 'xc0': 0.0},
@@ -83,14 +83,16 @@ class Observations:
                  resources.timeslot_sites_string(self.valid_site_times[id], timeslot)))
 
     def tick(self, timeslot: int):
-        self.timeslot = timeslot
         self.calculate_priority()
-        print(self.priority)
+        #print(self.priority)
         # Order so that the highest priority is at the top.
-        ordered = list(zip(*list(reversed(sorted(list(zip(self.priority, range(len(self.priority)))))))))[1]
-        print(ordered)
-        for i in ordered:
-            print(self.print_obs(i, timeslot))
+        #ordered = list(zip(*list(reversed(sorted(list(zip(self.priority, range(len(self.priority)))))))))[1]
+        #print(ordered)
+        #for i in ordered:
+            #print(self.print_obs(i, timeslot))
+
+    def is_done(self, id: int) -> bool:
+        return self.used_time[id] >= self.obs_time[id]
 
     def calculate_completion(self):
         """
@@ -99,7 +101,7 @@ class Observations:
         """
         time = (self.used_time + self.obs_time) / self.allocated_time
         self.completed = np.where(time > 1., 1., time)
-        print(self.completed)
+        #print(self.completed)
 
     def __len__(self):
         return self.num_obs
@@ -140,7 +142,7 @@ class Observations:
                 metric[ii] = self.params[sband]['m2'] * self.completed[ii] + b2
             else:
                 metric[ii] = self.params[sband]['m2'] * 1.0 + b2 + self.params[sband]['xc0']
-        print(metric)
+        #print(metric)
         self.priority = metric
 
 

@@ -16,13 +16,7 @@ def timeslot_sites_string(sites: Mapping[int, Set[Site]], timeslot: int) -> str:
 
 
 def sites_string(sites: Set[Site]) -> str:
-    s = ""
-    if Site.GN in sites:
-        s = "GN "
-    if Site.GS in sites:
-        s += "GS"
-    return s
-
+    return ' '.join([site.name for site in sites])
 
 # If an observation O can be run on both sites n = GN and s = GS, we need the constraint:
 # O_int + O_ist <= 0

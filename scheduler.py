@@ -22,21 +22,26 @@ class Scheduler:
         """
         self.timeslots = timeslots
         self.timeslot_length = timeslot_length
-        self.observations = Observations(timeslot_length)
+        self.observations = Observations()
 
-    def schedule(self) -> List[Tuple[int, list]]:
+    def schedule(self) -> List[List[str]]:
+        """
+        Perform the scheduling.
+        :return: the schedule, which is a list of list of Schedule_ID, indexed by time slot.
+        """
         timeslot = 0
         scheduling = []
         while timeslot < self.timeslots:
             current_schedule = self.tick(timeslot)
-            scheduling.append((timeslot, current_schedule))#[Scheduler.from_schedule_id(c) for c in current_schedule]))
+            scheduling.append(current_schedule)
             print("\n\n*** TIMESLOT %s ***" % timeslot)
             print("*** Schedule for timeslot %d: %s" % (timeslot, current_schedule))
             print("*** Remaining times:")
             for id in range(self.observations.num_obs):
-                print("Obs %d, used_time=%f, obs_time=%f" % (id,
-                                                             self.observations.used_time[id],
-                                                             self.observations.obs_time[id]))
+                print("Obs %d, used_time=%d, obs_time=%d, done=%s" % (id,
+                                                                      int(self.observations.used_time[id]),
+                                                                      int(self.observations.obs_time[id]),
+                                                                      self.observations.is_done(id)))
             print("*** ENDING TIMESLOT %s ***\n\n\n" % timeslot)
             timeslot += 1
         return scheduling
@@ -222,17 +227,17 @@ def run_simulation2():
     E = set()
 
     # 0
-    sched.observations.add_obs('1', {0: S,  1: E, 2: S,  3: NS, 4: NS, 5: E,  6: N,  7: NS}, 1200, 1200)
+    sched.observations.add_obs('1', {0: S, 1: E, 2: S, 3: NS, 4: NS, 5: E, 6: N, 7: NS}, 1200, 1200)
     # 1
-    sched.observations.add_obs('3', {0: NS, 1: N, 2: NS, 3: E,  4: N,  5: E,  6: NS, 7: S},   500,  500)
+    sched.observations.add_obs('3', {0: NS, 1: N, 2: NS, 3: E, 4: N, 5: E, 6: NS, 7: S}, 500, 500)
     # 2
-    sched.observations.add_obs('2', {0: N,  1: E, 2: N,  3: E,  4: NS, 5: S,  6: NS, 7: NS},  700,  700)
+    sched.observations.add_obs('2', {0: N, 1: E, 2: N, 3: E, 4: NS, 5: S, 6: NS, 7: NS}, 700, 700)
     # 3
-    sched.observations.add_obs('1', {0: NS, 1: S, 2: NS, 3: NS, 4: S,  5: N,  6: NS, 7: E},   600,  600)
+    sched.observations.add_obs('1', {0: NS, 1: S, 2: NS, 3: NS, 4: S, 5: N, 6: NS, 7: E}, 600, 600)
     # 4
-    sched.observations.add_obs('2', {0: S,  1: N, 2: S,  3: E,  4: NS,  5: N, 6: S,  7: N}, 1800, 1800)
+    sched.observations.add_obs('2', {0: S, 1: N, 2: S, 3: E, 4: NS, 5: N, 6: S, 7: N}, 1800, 1800)
     # 5
-    sched.observations.add_obs('3', {0: N,  1: E, 2: NS, 3: E,  4: E,   5: E, 6: N,  7: S}, 1200, 1200)
+    sched.observations.add_obs('3', {0: N, 1: E, 2: NS, 3: E, 4: E, 5: E, 6: N, 7: S}, 1200, 1200)
 
     return sched, sched.schedule()
 

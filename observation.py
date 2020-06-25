@@ -15,7 +15,7 @@ class Observations:
     a certain resource or not.
     """
 
-    def __init__(self, timeslot_length: float):
+    def __init__(self):
         """
         Initialize to an empty set of observations.
         Right now, this is a mix of numpy and python as I think we need constructs from both.
@@ -40,8 +40,6 @@ class Observations:
         self.obs_time = np.empty((0,), dtype=float)
         self.valid_site_times = []
         self.priority = np.empty((0,), dtype=float)
-        self.timeslot_length = timeslot_length
-        assert(self.timeslot_length > 0, "Time slot length must be nonnegative, in seconds: %s" % timeslot_length)
 
         self.params = {'1': {'m1': 1.406, 'b1': 2.0, 'm2': 0.50, 'b2': 0.5, 'xb': 0.8, 'xb0': 0.0, 'xc0': 0.0},
                        '2': {'m1': 1.406, 'b1': 1.0, 'm2': 0.50, 'b2': 0.5, 'xb': 0.8, 'xb0': 0.0, 'xc0': 0.0},
@@ -144,15 +142,3 @@ class Observations:
                 metric[ii] = self.params[sband]['m2'] * 1.0 + b2 + self.params[sband]['xc0']
         #print(metric)
         self.priority = metric
-
-
-if __name__ == '__main__':
-    obs = Observations()
-    obs.add_obs('3', {0: {resources.Site.GN}, 1: {resources.Site.GN, resources.Site.GS}}, 480, 300)
-    obs.add_obs('1', {0: {resources.Site.GS}, 1: {resources.Site.GN}}, 300, 250)
-    obs.add_obs('2', {0: {resources.Site.GS}, 1: {resources.Site.GN}}, 200, 150)
-    obs.add_obs('2', {0: {resources.Site.GN}, 1: {resources.Site.GN}}, 300, 250)
-    obs.add_obs('4', {0: {resources.Site.GN}, 1: {resources.Site.GN}}, 300, 200)
-
-    obs.tick(0)
-    print("Done")

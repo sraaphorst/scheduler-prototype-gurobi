@@ -218,7 +218,7 @@ def run_simulation1():
 
 
 def run_simulation2():
-    sched = Scheduler(8, 600)
+    sched = Scheduler(10, 600)
 
     # Shorthand
     NS = {resources.Site.GN, resources.Site.GS}
@@ -226,18 +226,19 @@ def run_simulation2():
     S = {resources.Site.GS}
     E = set()
 
+    # OBS_ID                  BAND  TIME_SLICE_RESOURCES                                         OBS_TIME ALLOC_TIME
     # 0
-    sched.observations.add_obs('1', {0: S, 1: E, 2: S, 3: NS, 4: NS, 5: E, 6: N, 7: NS}, 1200, 1200)
+    sched.observations.add_obs('1', {0: S,  1: E, 2: S,  3: NS, 4: NS, 5: E,  6: N,  7: NS, 8: NS}, 1200,      1200)
     # 1
-    sched.observations.add_obs('3', {0: NS, 1: N, 2: NS, 3: E, 4: N, 5: E, 6: NS, 7: S}, 500, 500)
+    sched.observations.add_obs('3', {0: NS, 1: N, 2: NS, 3: E,  4: N,  5: E,  6: NS, 7: S,  8: NS},  500,       500)
     # 2
-    sched.observations.add_obs('2', {0: N, 1: E, 2: N, 3: E, 4: NS, 5: S, 6: NS, 7: NS}, 700, 700)
+    sched.observations.add_obs('2', {0: N,  1: E, 2: N,  3: E,  4: NS,  5: S, 6: NS, 7: NS, 8: NS},  700,       700)
     # 3
-    sched.observations.add_obs('1', {0: NS, 1: S, 2: NS, 3: NS, 4: S, 5: N, 6: NS, 7: E}, 600, 600)
+    sched.observations.add_obs('1', {0: S,  1: S, 2: NS, 3: NS, 4: S,   5: N, 6: NS, 7: E,  8: NS},  600,       600)
     # 4
-    sched.observations.add_obs('2', {0: S, 1: N, 2: S, 3: E, 4: NS, 5: N, 6: S, 7: N}, 1800, 1800)
+    sched.observations.add_obs('2', {0: S,  1: N, 2: S,  3: E,  4: NS,  5: N, 6: S,  7: N,  8: NS}, 1800,      1800)
     # 5
-    sched.observations.add_obs('3', {0: N, 1: E, 2: NS, 3: E, 4: E, 5: E, 6: N, 7: S}, 1200, 1200)
+    sched.observations.add_obs('3', {0: N,  1: E, 2: NS, 3: E,  4: E,   5: E, 6: N,  7: E,  8: NS}, 1200,      1200)
 
     return sched, sched.schedule()
 
